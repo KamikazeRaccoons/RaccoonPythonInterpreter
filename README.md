@@ -1,2 +1,2 @@
 # RaccoonPythonInterpreter
-The interpreter used for 
+A Python interpreter used for rapid cross-communication between the executing Python thread and the main application thread.
