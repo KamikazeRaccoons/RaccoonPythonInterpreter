@@ -13,6 +13,7 @@
 
 #include <Python.h>
 #include <boost\python.hpp>
+#include <boost\thread.hpp>
 
 #include <string>
 #include <algorithm>

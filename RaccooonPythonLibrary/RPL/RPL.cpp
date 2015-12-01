@@ -26,13 +26,13 @@ bool rplInterpreter::initialize()
 {
 	if (m_initialized)
 		return false;
-
+	
 	if (!Py_IsInitialized())
 		Py_Initialize();
 
-	m_mainModule = import("__main__");
+	m_mainModule = python::import("__main__");
 	m_mainNamespace = m_mainModule.attr("__dict__");
-
+	
 	return m_initialized = Py_IsInitialized();
 }
 
@@ -41,12 +41,15 @@ bool rplInterpreter::isInitialized()
 	return m_initialized;
 }
 
-void rplInterpreter::execute(std::string script)
+void rplInterpreter::execute(std::string script, bool multithreaded)
 {
-	exec(str(script), m_mainNamespace);
+	if (multithreaded)
+		m_executingThread = thread(boost::bind(&rplInterpreter::execute, this, script, false));
+	else
+		python::exec(python::str(script), m_mainNamespace);
 }
 
-bool rplInterpreter::registerClass(std::string name, object pythonClass)
+bool rplInterpreter::registerClass(std::string name, python::object pythonClass)
 {
 	if (!m_initialized)
 		return false;

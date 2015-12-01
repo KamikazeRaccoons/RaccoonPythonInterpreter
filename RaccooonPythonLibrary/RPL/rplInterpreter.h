@@ -8,7 +8,7 @@
 #define RPL_INTERPRETER_API __declspec(dllimport)
 #endif
 
-using namespace boost::python;
+using namespace boost;
 
 class rplInterpreter
 {
@@ -17,9 +17,11 @@ private:
 	static RPL_INTERPRETER_API rplInterpreter* m_pInstance;
 
 	bool m_initialized;
+	
+	python::object m_mainModule;
+	python::object m_mainNamespace;
 
-	object m_mainModule;
-	object m_mainNamespace;
+	thread m_executingThread;
 
 	RPL_INTERPRETER_API rplInterpreter();
 
@@ -31,9 +33,9 @@ public:
 
 	bool RPL_INTERPRETER_API isInitialized();
 
-	void RPL_INTERPRETER_API execute(std::string script);
+	void RPL_INTERPRETER_API execute(std::string script, bool multithreaded);
 
-	bool RPL_INTERPRETER_API registerClass(std::string name, object pythonClass);
+	bool RPL_INTERPRETER_API registerClass(std::string name, python::object pythonClass);
 
 	template <typename T>
 	bool addObject(std::string name, T* pythonObject)
@@ -41,7 +43,7 @@ public:
 		if (!m_initialized)
 			return false;
 
-		m_mainNamespace[name] = ptr(pythonObject);
+		m_mainNamespace[name] = python::ptr(pythonObject);
 
 		return true;
 	}
