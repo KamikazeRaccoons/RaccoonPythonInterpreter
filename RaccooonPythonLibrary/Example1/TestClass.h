@@ -3,19 +3,17 @@
 #include <Python.h>
 #include <boost\python.hpp>
 #include <boost\thread.hpp>
+#include <rplObject.h>
 
-class TestClass
+class TestClass : rplObject
 {
 private:
-
-	boost::mutex* m_mutex;
 
 	int m_counter;
 
 public:
 
 	TestClass(std::string name);
-	~TestClass();
 
 	static void registerClass();
 

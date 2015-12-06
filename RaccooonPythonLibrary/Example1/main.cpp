@@ -11,38 +11,29 @@ using namespace boost;
 
 int main()
 {
-	try
+	if (rplInterpreter::getInstance()->initialize())
 	{
-		if (rplInterpreter::getInstance()->initialize())
-		{
-			std::cout << "Initialization success!\n";
+		std::cout << "Initialization success!\n";
 		
-			TestClass::registerClass();
+		TestClass::registerClass();
 		
-			TestClass* testClass = new TestClass("testClass");
-		
-			rplInterpreter::getInstance()->execute("while True:\n\ttestClass.output()", true);
+		TestClass* testClass = new TestClass("testClass");
 
-			while (true)
-				testClass->increment();
-		}
-		else
-		{
-			std::cout << "Initialization failed.\n";
-		}
+		rplInterpreter::getInstance()->execute("while True:\n\ttestClass.output()", true);
+
+		for (int i = 0; i < 500000; i++)
+			testClass->increment();
+
+		rplInterpreter::getInstance()->terminate();
+
+		delete testClass;
 	}
-	catch (python::error_already_set) // must be single-threaded for debugging to work.
+	else
 	{
-		PyObject *pType, *pValue, *pTraceback;
-		PyErr_Fetch(&pType, &pValue, &pTraceback);
-
-		if (pValue != NULL && pTraceback != NULL && pValue != NULL)
-			std::cout << std::string(python::extract<std::string>(pValue)) << std::endl;
-		else
-			std::cout << "An unexpected error has occurred (check syntax).\n";
+		std::cout << "Initialization failed.\n";
 	}
 
-	std::cin.get(); // Pause after execution is complete.
+	std::system("PAUSE"); // Pause after execution is complete.
 
 	return 0;
 }

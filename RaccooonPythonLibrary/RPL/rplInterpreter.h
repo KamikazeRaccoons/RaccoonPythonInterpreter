@@ -25,6 +25,8 @@ private:
 
 	RPL_INTERPRETER_API rplInterpreter();
 
+	static int RPL_INTERPRETER_API quitExec(void*);
+
 public:
 	
 	static RPL_INTERPRETER_API rplInterpreter* getInstance();
@@ -34,6 +36,8 @@ public:
 	bool RPL_INTERPRETER_API isInitialized();
 
 	void RPL_INTERPRETER_API execute(std::string script, bool multithreaded);
+
+	void RPL_INTERPRETER_API terminate();
 
 	bool RPL_INTERPRETER_API registerClass(std::string name, python::object pythonClass);
 
