@@ -72,6 +72,7 @@ void rplInterpreter::execute(std::string script, bool multithreaded)
 void rplInterpreter::terminate()
 {
 	Py_AddPendingCall(&rplInterpreter::quitExec, NULL);
+	m_executingThread.join();
 }
 
 bool rplInterpreter::registerClass(std::string name, python::object pythonClass)
