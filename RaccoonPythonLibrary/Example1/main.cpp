@@ -1,7 +1,4 @@
-#include <Python.h>
-#include <boost\python.hpp>
-#include <boost\thread.hpp>
-#include <rplInterpreter.h>
+#include <RPL.h>
 
 #include <iostream>
 
@@ -11,7 +8,7 @@ using namespace boost;
 
 int main()
 {
-	if (rplInterpreter::getInstance()->initialize())
+	if (rpl::Interpreter::getInstance()->initialize())
 	{
 		std::cout << "Initialization success!\n";
 		
@@ -19,12 +16,12 @@ int main()
 		
 		TestClass* testClass = new TestClass("testClass");
 
-		rplInterpreter::getInstance()->execute("while True:\n\ttestClass.output()", true);
+		rpl::Interpreter::getInstance()->execute("while True:\n\ttestClass.output()", true);
 
 		for (int i = 0; i < 500000; i++)
 			testClass->increment();
 
-		rplInterpreter::getInstance()->terminate();
+		rpl::Interpreter::getInstance()->terminate();
 
 		delete testClass;
 	}
