@@ -27,14 +27,14 @@ namespace rpl
 
 	public:
 
-		static Interpreter* getInstance();
+		static Interpreter* get();
 
 		bool initialize();
+		void reset();
 
 		bool isInitialized();
 
-		void execute(std::string script, bool multithreaded);
-
+		std::string execute(std::string script, bool multithreaded);
 		void terminate();
 
 		bool registerClass(std::string name, python::object pythonClass);

@@ -1,5 +1,7 @@
 #include "Interpreter.h"
 
+#include <string>
+
 namespace rpl
 {
 	Interpreter* Interpreter::m_pInstance = 0;
@@ -15,7 +17,7 @@ namespace rpl
 		return -1;
 	}
 
-	Interpreter* Interpreter::getInstance()
+	Interpreter* Interpreter::get()
 	{
 		if (m_pInstance == 0)
 			m_pInstance = new Interpreter();
@@ -37,19 +39,31 @@ namespace rpl
 		return m_initialized = Py_IsInitialized();
 	}
 
+	void Interpreter::reset()
+	{
+		m_mainNamespace = python::object();
+		m_mainModule = python::object();
+
+		m_initialized = false;
+	}
+
 	bool Interpreter::isInitialized()
 	{
 		return m_initialized;
 	}
 
-	void Interpreter::execute(std::string script, bool multithreaded)
+	std::string Interpreter::execute(std::string script, bool multithreaded)
 	{
+		std::string result;
+
 		try
 		{
 			if (multithreaded)
 				m_executingThread = thread(boost::bind(&Interpreter::execute, this, script, false));
 			else
 				python::exec(python::str(script), m_mainNamespace);
+
+			result = "Execution successful.";
 		}
 		catch (python::error_already_set)
 		{
@@ -57,10 +71,12 @@ namespace rpl
 			PyErr_Fetch(&pType, &pValue, &pTraceback);
 
 			if (pType != NULL && pValue != NULL && pTraceback != NULL)
-				std::cout << std::string(python::extract<std::string>(pValue)) << std::endl;
+				result = std::string(python::extract<std::string>(pValue));
 			else
-				std::cout << "An unexpected error has occurred (check syntax).\n";
+				result = "An unexpected error has occurred (check syntax).\n";
 		}
+
+		return result;
 	}
 
 	void Interpreter::terminate()

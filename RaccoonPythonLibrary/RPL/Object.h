@@ -41,7 +41,7 @@ namespace rpl
 		Object(std::string name, T* instance)
 		{
 			m_pMutex = new mutex();
-			Interpreter::getInstance()->addObject(name, instance);
+			Interpreter::get()->addObject(name, instance);
 		}
 
 		~Object();
